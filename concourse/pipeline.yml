@@ -48,6 +48,7 @@ jobs:
     public: true
     plan:
       - get: resource-source-code
+        trigger: true
       - get: my-timer
         trigger: false
       - task: print-readme.md
