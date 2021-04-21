@@ -112,15 +112,19 @@ jobs:
             AWS_ACCESS_KEY_ID: ((AWS_ACCESS_KEY_ID))
             AWS_SECRET_ACCESS_KEY: ((AWS_SECRET_ACCESS_KEY))
             AWS_SESSION_TOKEN: ((AWS_SESSION_TOKEN))
-            AWS_DEFAULT_REGION: ((REGION)
+            AWS_DEFAULT_REGION: ((REGION))
             TF_VAR_vpc_tag_key: ((vpc_tag_key))
             TF_VAR_vpc_tag_value: ((vpc_tag_value))
+          inputs:
+            - name: resource-source-code
           run:
             path: /bin/bash
             args:
             - -exc
             - |
               cd resource-source-code/terraform
+              echo "******** terraform init *********"
+              terraform init
               echo "******** terraform plan *********"
               terraform plan        
               echo "******** terraform apply *********"
@@ -128,5 +132,5 @@ jobs:
               echo "******** terraform output *********"
               terraform output
               echo "******** terraform destroy *********"
-              terraform destroy
-              
+              terraform destroy -auto-approve            
+              echo "******** End of Terraform jobs *********"   
