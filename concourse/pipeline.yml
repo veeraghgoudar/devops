@@ -1,0 +1,69 @@
+---
+resources:
+  - name: resource-source-code
+    type: git
+    source:
+      uri: https://github.com/veeraghgoudar/devops.git
+      branch: main
+  - name: resource-base-container
+    type: docker-image
+    source:
+      #email: ((docker-hub-email))
+      username: ((docker-hub-username))
+      password: ((docker-hub-password))
+      repository: veeraghgoudar/concourse_base
+  - name: my-timer
+    type: time
+    source:
+      interval: 2m      
+
+jobs:
+  - name: start-pipeline
+    public: true
+    plan:
+      - get: resource-source-code
+      - get: my-timer
+        trigger: false
+      - task: print-readme.md
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source: {repository: ubuntu}
+          run:
+            path: /bin/bash
+            args:
+            - -exc
+            - |
+              echo "Printing readme.md"on
+              cd resource-source-code
+              ls           
+              cat README.md
+          inputs:
+            - name: resource-source-code
+
+  - name: build-and-publish-image
+    public: true
+    plan:
+      - get: resource-source-code
+      - put: resource-base-container
+        params:
+          build: resource-source-code
+          dockerfile: resource-source-code/Dockerfile
+          tag_file: resource-source-code/version.txt
+      - task: check-built-image
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: veeraghgoudar/concourse_base
+          run:
+            path: /bin/bash
+            args:
+            - -exc
+            - |
+              echo "Checking image versions"
+              ansible --version
+              terraform --version
+              aws --version 
