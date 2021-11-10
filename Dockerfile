@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y apt-utils && apt-get install -y gettext
 
 RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - && \
 apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" && \
-apt-get update && apt-get install terraform==0.14.11
+apt-get update && apt-get install terraform=0.14.11
 
 
 RUN pip3 install awscli ansible --upgrade pip
