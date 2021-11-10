@@ -94,44 +94,44 @@ jobs:
               terraform --version
               aws --version
 
-  - name: run-terraform-jobs
-    public: true
-    plan:
-      - get: resource-source-code
-        trigger: true
-        passed:
-          - get-container-image
-      - task: run-all-terraform-commands
-        config:
-          platform: linux
-          image_resource:
-            type: docker-image
-            source:
-              repository: veeraghgoudar/concourse_base
-              tag_file: resource-source-code/version.txt
-          params:
-            AWS_ACCESS_KEY_ID: ((AWS_ACCESS_KEY_ID))
-            AWS_SECRET_ACCESS_KEY: ((AWS_SECRET_ACCESS_KEY))
-            AWS_SESSION_TOKEN: ((AWS_SESSION_TOKEN))
-            AWS_DEFAULT_REGION: ((REGION))
-            TF_VAR_vpc_tag_key: ((vpc_tag_key))
-            TF_VAR_vpc_tag_value: ((vpc_tag_value))
-          inputs:
-            - name: resource-source-code
-          run:
-            path: /bin/bash
-            args:
-            - -exc
-            - |
-              cd resource-source-code/terraform
-              echo "******** terraform init *********"
-              terraform init
-              echo "******** terraform plan *********"
-              terraform plan        
-              echo "******** terraform apply *********"
-              terraform apply -auto-approve
-              echo "******** terraform output *********"
-              terraform output
-              echo "******** terraform destroy *********"
-              terraform destroy -auto-approve            
-              echo "******** End of Terraform jobs *********"   
+  # - name: run-terraform-jobs
+  #   public: true
+  #   plan:
+  #     - get: resource-source-code
+  #       trigger: true
+  #       passed:
+  #         - get-container-image
+  #     - task: run-all-terraform-commands
+  #       config:
+  #         platform: linux
+  #         image_resource:
+  #           type: docker-image
+  #           source:
+  #             repository: veeraghgoudar/concourse_base
+  #             tag_file: resource-source-code/version.txt
+  #         params:
+  #           AWS_ACCESS_KEY_ID: ((AWS_ACCESS_KEY_ID))
+  #           AWS_SECRET_ACCESS_KEY: ((AWS_SECRET_ACCESS_KEY))
+  #           AWS_SESSION_TOKEN: ((AWS_SESSION_TOKEN))
+  #           AWS_DEFAULT_REGION: ((REGION))
+  #           TF_VAR_vpc_tag_key: ((vpc_tag_key))
+  #           TF_VAR_vpc_tag_value: ((vpc_tag_value))
+  #         inputs:
+  #           - name: resource-source-code
+  #         run:
+  #           path: /bin/bash
+  #           args:
+  #           - -exc
+  #           - |
+  #             cd resource-source-code/terraform
+  #             echo "******** terraform init *********"
+  #             terraform init
+  #             echo "******** terraform plan *********"
+  #             terraform plan        
+  #             echo "******** terraform apply *********"
+  #             terraform apply -auto-approve
+  #             echo "******** terraform output *********"
+  #             terraform output
+  #             echo "******** terraform destroy *********"
+  #             terraform destroy -auto-approve            
+  #             echo "******** End of Terraform jobs *********"   
